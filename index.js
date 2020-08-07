@@ -1,13 +1,15 @@
 require('dotenv').config()
 const express = require('express')
 const { response, json } = require('express')
+
 const app = express()
 var morgan = require('morgan')
 const cors = require('cors')
+
 const Person = require('./models/person')
 
 morgan.token('data', (req, res) => {
-    return JSON.stringify(req.body)
+  return JSON.stringify(req.body)
 })
 
 app.use(cors())
@@ -30,9 +32,9 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/info', (req, res) => {
-    let date = new Date()
-    
-    Person
+  let date = new Date()
+
+  Person
     .find({})
     .then(persons => {
       res.send(`<p> Phonebook has info for ${persons.length} people. </p>
@@ -50,29 +52,29 @@ app.get('/api/persons/:id', (req, res, next) => {
       }
     })
     .catch(error => next(error))
-  })
+})
 
 app.delete('/api/persons/:id', (request, response, next) => {
-    Person.findByIdAndRemove(request.params.id)
+  Person.findByIdAndRemove(request.params.id)
     .then(result => {
       response.status(204).end()
     })
     .catch(error => next(error))
-  })
+})
 
 
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
-  
+
   if (!body.name) {
-    return response.status(400).json({ 
-      error: 'name missing' 
+    return response.status(400).json({
+      error: 'name missing'
     })
   }
 
   if (!body.number) {
-    return response.status(400).json({ 
-      error: 'number missing' 
+    return response.status(400).json({
+      error: 'number missing'
     })
   }
 
@@ -82,10 +84,11 @@ app.post('/api/persons', (request, response, next) => {
     number: body.number,
   })
 
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
-  .catch(error => next(error)) 
+  person.save()
+    .then(savedPerson => {
+      response.json(savedPerson)
+    })
+    .catch(error => next(error))
 
 })
 
